@@ -11,22 +11,23 @@ jobs:
   fetch:
     runs-on: ubuntu-latest
     steps:
-      - name: Download Draco encoder assets
+      - name: Download Draco encoder and decoder assets
         run: |
           set -euo pipefail
-          curl -L --fail --retry 3 \
-            https://raw.githubusercontent.com/google/draco/main/javascript/npm/draco3dgltf/draco_encoder_gltf_nodejs.js \
-            -o draco_encoder_gltf_nodejs.js
-          curl -L --fail --retry 3 \
-            https://raw.githubusercontent.com/google/draco/main/javascript/npm/draco3dgltf/draco_encoder.wasm \
-            -o draco_encoder.wasm
+          base=https://raw.githubusercontent.com/google/draco/main/javascript/npm/draco3dgltf
+          curl -L --fail --retry 3 "$base/draco_encoder_gltf_nodejs.js" -o draco_encoder_gltf_nodejs.js
+          curl -L --fail --retry 3 "$base/draco_encoder.wasm" -o draco_encoder.wasm
+          curl -L --fail --retry 3 "$base/draco_decoder_gltf_nodejs.js" -o draco_decoder_gltf_nodejs.js
+          curl -L --fail --retry 3 "$base/draco_decoder.wasm" -o draco_decoder.wasm
 
-      - name: Upload Draco encoder artifact
+      - name: Upload Draco codec artifact
         uses: actions/upload-artifact@v4
         with:
-          name: draco-encoder-assets
+          name: draco-codec-assets
           path: |
             draco_encoder_gltf_nodejs.js
             draco_encoder.wasm
+            draco_decoder_gltf_nodejs.js
+            draco_decoder.wasm
           if-no-files-found: error
           compression-level: 0
