@@ -18,7 +18,7 @@ jobs:
           curl -L --fail --retry 3 "$base/draco_encoder_gltf_nodejs.js" -o draco_encoder_gltf_nodejs.js
           curl -L --fail --retry 3 "$base/draco_encoder.wasm" -o draco_encoder.wasm
           curl -L --fail --retry 3 "$base/draco_decoder_gltf_nodejs.js" -o draco_decoder_gltf_nodejs.js
-          curl -L --fail --retry 3 "$base/draco_decoder.wasm" -o draco_decoder.wasm
+          curl -L --fail --retry 3 "$base/draco_decoder_gltf.wasm" -o draco_decoder_gltf.wasm
 
       - name: Upload Draco codec artifact
         uses: actions/upload-artifact@v4
@@ -28,6 +28,6 @@ jobs:
             draco_encoder_gltf_nodejs.js
             draco_encoder.wasm
             draco_decoder_gltf_nodejs.js
-            draco_decoder.wasm
+            draco_decoder_gltf.wasm
           if-no-files-found: error
           compression-level: 0
