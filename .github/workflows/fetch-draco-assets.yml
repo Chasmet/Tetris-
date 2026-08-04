@@ -1,37 +1,32 @@
 name: Fetch Draco Assets
 
 on:
-  push:
-    paths:
-      - '.github/workflows/fetch-draco-assets.yml'
+  pull_request:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   fetch:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
       - name: Download Draco encoder assets
         run: |
           set -euo pipefail
           curl -L --fail --retry 3 \
             https://raw.githubusercontent.com/google/draco/main/javascript/npm/draco3dgltf/draco_encoder_gltf_nodejs.js \
-            -o draco_encoder_gltf_nodejs.js.txt
+            -o draco_encoder_gltf_nodejs.js
           curl -L --fail --retry 3 \
             https://raw.githubusercontent.com/google/draco/main/javascript/npm/draco3dgltf/draco_encoder.wasm \
             -o draco_encoder.wasm
-          base64 -w 76 draco_encoder.wasm > draco_encoder.wasm.b64.txt
-          rm draco_encoder.wasm
 
-      - name: Commit assets
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add draco_encoder_gltf_nodejs.js.txt draco_encoder.wasm.b64.txt
-          git commit -m "Add temporary Draco encoder assets [skip ci]"
-          git push
+      - name: Upload Draco encoder artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: draco-encoder-assets
+          path: |
+            draco_encoder_gltf_nodejs.js
+            draco_encoder.wasm
+          if-no-files-found: error
+          compression-level: 0
